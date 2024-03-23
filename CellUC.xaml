@@ -1,0 +1,18 @@
+﻿<UserControl x:Class="Sudoku_solver.CellUC"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Sudoku_solver"
+             mc:Ignorable="d" 
+             Height="50" Width="50" Background="Yellow" Opacity="0.5"
+             HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+
+    <Button BorderThickness="0.5" Content="5"
+            Cursor="Hand" Background="Green"
+            HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+            Width="50" Height="50">
+        
+    </Button>
+
+</UserControl>

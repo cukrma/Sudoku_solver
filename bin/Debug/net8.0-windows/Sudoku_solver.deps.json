@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "Sudoku_solver/1.0.0": {
+        "runtime": {
+          "Sudoku_solver.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Sudoku_solver/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
