@@ -13,14 +13,14 @@ namespace Sudoku_solver
         private readonly int col;
         private readonly int box;
         private int number;
-        //private List<int> candidates;
+        private List<int> candidates = new List<int>();
 
         public int Id { get { return id; } }
         public int Row { get { return row; } }
         public int Col { get { return col; } }
         public int Box { get { return box; } }
-        public int Number { get { return number; } }
-        //public List<int> Candidates { get { return candidates; } set { candidates = value; } }
+        public int Number { get { return number; } set { number = value; } }
+        public List<int> Candidates { get { return candidates; } set { candidates = value; } }
 
 
         public Cell(int row, int col, int number = 0, int id = 0)
@@ -40,31 +40,31 @@ namespace Sudoku_solver
             //candidates.AddRange([1, 2, 3, 4, 5, 6, 7, 8, 9]);
         }
 
-        public void SetNumber(int num)
-        {
-            //if (number == num)
-            //    return;
-            //else if (number == 0 && num != 0)
-            //{
-            //    //candidates.Clear();
-            //    // TODO
-            //    // upravit kandidaty v sousednich bunkach
-            //}
-            //else if (number != 0 && num == 0)
-            //{
-            //    // TODO
-            //    // vytvorit kandidaty pro tuto bunku
-            //    // upravit kandidaty v sousednich bunkach
-            //}
-            //else
-            //{
-            //    // TODO
-            //    // upravit kandidaty v sousednich bunkach
-            //}
+        //public void SetNumber(int num)
+        //{
+        //    //if (number == num)
+        //    //    return;
+        //    //else if (number == 0 && num != 0)
+        //    //{
+        //    //    //candidates.Clear();
+        //    //    // TODO
+        //    //    // upravit kandidaty v sousednich bunkach
+        //    //}
+        //    //else if (number != 0 && num == 0)
+        //    //{
+        //    //    // TODO
+        //    //    // vytvorit kandidaty pro tuto bunku
+        //    //    // upravit kandidaty v sousednich bunkach
+        //    //}
+        //    //else
+        //    //{
+        //    //    // TODO
+        //    //    // upravit kandidaty v sousednich bunkach
+        //    //}
 
-            number = num;
+        //    number = num;
 
-        }
+        //}
 
 
 

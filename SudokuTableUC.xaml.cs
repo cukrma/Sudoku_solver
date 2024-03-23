@@ -20,6 +20,7 @@ namespace Sudoku_solver
     /// </summary>
     public partial class SudokuTableUC : UserControl
     {
+        private List<Cell> cells = new List<Cell>();
         private List<Button> buttons = new List<Button>();
         private KeyboardUC keyboardUC = new KeyboardUC();
         private int clickedButtonId = 0;
@@ -31,42 +32,8 @@ namespace Sudoku_solver
         {
             InitializeComponent();
 
-            CreateGridCells();
+            CreateGridCellsAndButtons();
             CreateKeyboard();
-        }
-
-        private void CreateGridCells()
-        {
-            for (int row = 1; row <= 9; row++)
-            {
-                for (int col = 1; col <= 9; col++)
-                {
-                    Button btn = new Button();
-                    int id = (row - 1) * 9 + col;
-                    btn.Name = $"button_{id}";
-                    btn.Content = "";
-                    btn.BorderThickness = new Thickness(0.5);
-                    btn.Click += ButtonClickHandler;
-                    AddBorder(btn, row, col);
-                    buttons.Add(btn);
-                    grid.Children.Add(btn);
-
-                    Grid.SetRow(btn, row - 1);
-                    Grid.SetColumn(btn, col - 1);
-                }
-            }
-        }
-
-        private void CreateKeyboard()
-        {
-            HideKeyboard();
-            keyboardUC.keyboardButton_Click += onKeyboardButton_Click;
-            grid.Children.Add(keyboardUC);
-
-            Grid.SetRow(keyboardUC, 0);
-            Grid.SetRowSpan(keyboardUC, 9);
-            Grid.SetColumn(keyboardUC, 0);
-            Grid.SetColumnSpan(keyboardUC, 9);
         }
 
         public void LoadGame(string input)
@@ -95,26 +62,96 @@ namespace Sudoku_solver
 
         public string GameRuleViolated()
         {
-            List<Cell> cells = CreateCells();
-            string rule = CheckRules(cells);
+            cells = SetCellsNumbers();
+            string rule = CheckRules();
             return rule;
         }
 
-        private List<Cell> CreateCells()
+        public void SolveGame()
         {
-            List<Cell> cells = new List<Cell>();
+            SudokuSolver sudokuSolver = new SudokuSolver(cells);
+            bool isSolved = sudokuSolver.Solve();
 
-            foreach (Button btn in buttons)
+            if (!isSolved)
+            {
+                MessageBox.Show("The Sudoku was not successfully solved for an unknown reason.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            cells = sudokuSolver.SolvedCells;
+            
+            for (int i = 0; i < 81; i++)
             {
                 try
                 {
-                    int id = int.Parse(btn.Name.Substring(7));
-                    int row = (id - 1) / 9 + 1;
-                    int col = (id - 1) % 9 + 1;
+                    Cell cell = cells.ElementAt(i);
+                    Button btn = buttons.ElementAt(i);
+                    btn.Content = cell.Number.ToString();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error occured while setting buttons content: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+
+            string rule = CheckRules();
+
+            if (rule != "")
+            {
+                MessageBox.Show($"Game rules violated! {rule}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+
+        private void CreateGridCellsAndButtons()
+        {
+            for (int row = 1; row <= 9; row++)
+            {
+                for (int col = 1; col <= 9; col++)
+                {
+                    Button btn = new Button();
+                    int id = (row - 1) * 9 + col;
+                    btn.Name = $"button_{id}";
+                    btn.Content = "";
+                    btn.BorderThickness = new Thickness(0.5);
+                    btn.Click += ButtonClickHandler;
+                    AddBorder(btn, row, col);
+                    buttons.Add(btn);
+                    grid.Children.Add(btn);
+
+                    Grid.SetRow(btn, row - 1);
+                    Grid.SetColumn(btn, col - 1);
+
+                    Cell cell = new Cell(row, col, 0, id);
+                    cells.Add(cell);
+                }
+            }
+        }
+
+        private void CreateKeyboard()
+        {
+            HideKeyboard();
+            keyboardUC.keyboardButton_Click += onKeyboardButton_Click;
+            grid.Children.Add(keyboardUC);
+
+            Grid.SetRow(keyboardUC, 0);
+            Grid.SetRowSpan(keyboardUC, 9);
+            Grid.SetColumn(keyboardUC, 0);
+            Grid.SetColumnSpan(keyboardUC, 9);
+        }
+
+        private List<Cell> SetCellsNumbers()
+        {
+            for (int i = 0; i < 81; i++)
+            {
+                try
+                {
+                    Button btn = buttons.ElementAt(i);
                     int num = btn.Content.ToString() == "" ? 0 : int.Parse(btn.Content.ToString());
 
-                    Cell cell = new Cell(row, col, num, id);
-                    cells.Add(cell);
+                    Cell cell = cells.ElementAt(i);
+                    cell.Number = num;
+                    cell.Candidates.Clear();
                 }
                 catch (Exception ex)
                 {
@@ -127,7 +164,7 @@ namespace Sudoku_solver
             return cells;
         }
 
-        private string CheckRules(List<Cell> cells)
+        private string CheckRules()
         {
             string rule = "";
             bool hasDuplicates = false;

@@ -110,7 +110,15 @@ namespace Sudoku_solver
         private void SolveButton_Click(object sender, RoutedEventArgs e)
         {
             sudoku.HideKeyboard();
+            string rule = sudoku.GameRuleViolated();
 
+            if (rule != "")
+            {
+                stopSolvingGame(rule);
+                return;
+            }
+
+            sudoku.SolveGame();
         }
 
 
@@ -124,6 +132,13 @@ namespace Sudoku_solver
                 return false;
             else
                 return true;
+        }
+
+        private void stopSolvingGame(string rule)
+        {
+            MessageBox.Show($"The game can't be solved because it violates the rules. " +
+                $"It contains multiple identical numbers within one {rule}.",
+                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 }

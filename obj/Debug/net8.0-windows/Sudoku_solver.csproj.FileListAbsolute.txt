@@ -24,3 +24,4 @@ C:\my_files\Sudoku_solver\Sudoku_solver\obj\Debug\net8.0-windows\CellUC.g.cs
 C:\my_files\Sudoku_solver\Sudoku_solver\obj\Debug\net8.0-windows\CellUC.baml
 C:\my_files\Sudoku_solver\Sudoku_solver\obj\Debug\net8.0-windows\KeyboardUC.g.cs
 C:\my_files\Sudoku_solver\Sudoku_solver\obj\Debug\net8.0-windows\KeyboardUC.baml
+C:\my_files\Sudoku_solver\Sudoku_solver\obj\Debug\net8.0-windows\Sudoku_solver.sourcelink.json
