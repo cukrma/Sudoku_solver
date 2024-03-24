@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 
 namespace Sudoku_solver
@@ -68,7 +69,7 @@ namespace Sudoku_solver
 
             if (!isSolved)
             {
-                MessageBox.Show("The Sudoku was not successfully solved for an unknown reason.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("The Sudoku was not successfully solved.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -219,7 +220,11 @@ namespace Sudoku_solver
                 string name = btn.Name;
                 try
                 {
+                    if (clickedButtonId > 0)
+                        buttons[clickedButtonId - 1].Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFDEDEDE"));
+
                     clickedButtonId = int.Parse(name.Substring(7));
+                    buttons[clickedButtonId - 1].Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFADADAD"));
                     keyboardUC.Visibility = Visibility.Visible;
                 }
                 catch (Exception ex)
@@ -240,6 +245,8 @@ namespace Sudoku_solver
                 Button btn = buttons.ElementAt(clickedButtonId - 1);
                 btn.Content = num == 0 ? "" : num.ToString();
             }
+
+            clickedButtonId = 0;
         }
 
         // method that selecting which buttons and on which side should get thicker border
@@ -294,10 +301,13 @@ namespace Sudoku_solver
             btn.BorderThickness = newBorderThickness;
         }
 
-        // method for hiding keyboardUC
+        // method for hiding keyboardUC and reseting background of clicked button
         public void HideKeyboard()
         {
             keyboardUC.Visibility = Visibility.Collapsed;
+
+            if (clickedButtonId > 0)
+                buttons[clickedButtonId - 1].Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFDEDEDE"));
         }
 
     }

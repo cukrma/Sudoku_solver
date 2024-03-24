@@ -184,6 +184,8 @@ namespace Sudoku_solver
             try
             {
                 count = cells.Where(item => item.Number == 0 && item.Candidates.Count == 0).Count();
+                if (count > 0)
+                    MessageBox.Show("Current game state has no valid solution.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (Exception ex)
             {
