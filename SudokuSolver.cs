@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Security.RightsManagement;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using System.Windows;
+
 
 namespace Sudoku_solver
 {
@@ -22,23 +17,23 @@ namespace Sudoku_solver
             this.cells = cells;
         }
 
-
+        // main method that ensures solving the sudoku game
         public bool Solve()
         {
-            SetInitialCandidates();
-            bool stop = ExistEmptyCellWithoutCandidates();
+            SetInitialCandidates(); // setting candidates (possible numbers) for each cell that is empty
+            bool stop = ExistEmptyCellWithoutCandidates(); // if there is empty cell that has none candidates, it cant be solved
 
             if (stop)
                 return false;
 
-            FillCellsWithOneCandidate();
+            FillCellsWithOneCandidate(); // setting number for all cells with just one candidate
 
             stop = ExistEmptyCellWithoutCandidates();
 
             if (stop)
                 return false;
 
-            if (CountOfEmptyCells(cells) == 0) // all cells have numbers, sudoku is solved
+            if (CountOfEmptyCells(cells) == 0) // if all cells have numbers, sudoku is solved
                 return true;
 
             stop = !SolveProcess();
@@ -49,9 +44,10 @@ namespace Sudoku_solver
             return true;
         }
 
+        // method with its own solving algorithm
         private bool SolveProcess()
         {
-            List<Cell> cellsToCompute;
+            List<Cell> cellsToCompute; // all cells that are empty at the start of solving proccess
 
             try
             {
@@ -63,40 +59,25 @@ namespace Sudoku_solver
                 return false;
             }
 
-            StringBuilder config = new StringBuilder("");
-            StringBuilder config2 = new StringBuilder("");
+            StringBuilder config = new StringBuilder(""); // current configuration
             int emptyCellsCount = CountOfEmptyCells(cellsToCompute);
-            bool goingNext = true;
-            int step = 0;
+            bool goingNext = true; // true = going to calculate next new cell; false = going back and trying other candidates
 
             while (emptyCellsCount > 0)
             {
-                step++;
-
-                if (step == 100)
-                    Console.WriteLine("");
-
                 try
                 {
                     if (goingNext)
                     {
                         int index = config.Length;
                         Cell currentCell = cellsToCompute[index];
-                        if (currentCell.Id == 58 && currentCell.Candidates.Contains(4))
-                            Console.WriteLine("");
-                        if (currentCell.Candidates.GroupBy(num => num).Any(group => group.Count() > 1))
-                            Console.WriteLine("");
 
                         if (currentCell.Candidates.Count == 0)
                         {
                             goingNext = false;
                             continue;
                         }
-                        int candidate = currentCell.Candidates.First();
-                        ModifyCandidatesOfNeighborCells(currentCell, newNumber: candidate);
-                        currentCell.Number = candidate;
-                        //currentCell.Candidates.Clear();
-                        config.Append(candidate);
+                        SetNewCandidateForCell(currentCell, config);
                     }
                     else
                     {
@@ -109,36 +90,21 @@ namespace Sudoku_solver
 
                         int index = config.Length;
                         Cell currentCell = cellsToCompute[index];
-                        if (currentCell.Id == 58 && currentCell.Candidates.Contains(4))
-                            Console.WriteLine("");
-                        if (currentCell.Candidates.GroupBy(num => num).Any(group => group.Count() > 1))
-                            Console.WriteLine("");
 
                         List<int> candidates = currentCell.Candidates;
                         int candidateIndex = candidates.IndexOf(lastCandidate);
                         if (candidateIndex < candidates.Count - 1) // some candidates to try remain
                         {
-                            int candidate = currentCell.Candidates[candidateIndex + 1];
-                            ModifyCandidatesOfNeighborCells(currentCell, "replace", candidate);
-                            currentCell.Number = candidate;
-                            config.Append(candidate);
+                            SetNewCandidateForCell(currentCell, config, candidateIndex + 1, "replace");
                             goingNext = true;
                         }
                         else
                         {
                             ModifyCandidatesOfNeighborCells(currentCell, "add");
                             currentCell.Number = 0;
-                            //SetCandidatesForCell(currentCell);
                         }
                     }
                     emptyCellsCount = CountOfEmptyCells(cells);
-                    if (config == config2)
-                    {
-                        MessageBox.Show("Error solving the game, program is inside a cycle.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return false;
-                    }
-                    config2.Clear();
-                    config2.Append(config);
                 }
                 catch (Exception ex)
                 {
@@ -146,16 +112,27 @@ namespace Sudoku_solver
                     return false;
                 }
             }
+
             CreateSolvedCells(cellsToCompute);
 
             return true;
         }
 
+        // method for setting a new candidate for a cell, modifying the neighbor cells candidates and modifying the config
+        private void SetNewCandidateForCell(Cell currentCell, StringBuilder config, int candidateIndex = 0, string action = "remove")
+        {
+            int candidate = currentCell.Candidates[candidateIndex];
+            ModifyCandidatesOfNeighborCells(currentCell, action, newNumber: candidate);
+            currentCell.Number = candidate;
+            config.Append(candidate);
+        }
+
+        // method that settings solvedCells for its final values
         private void CreateSolvedCells(List<Cell> computedCells)
         {
-            solvedCells = cells;
+            solvedCells = cells; // original cells
 
-            foreach (Cell cell in computedCells)
+            foreach (Cell cell in computedCells) // cells that were computed during solving proccess
             {
                 Cell? c = solvedCells.FirstOrDefault(item => item.Id == cell.Id);
                 if (c != null)
@@ -165,6 +142,7 @@ namespace Sudoku_solver
             }
         }
 
+        // method for setting candidates before the start of solving proccess
         private void SetInitialCandidates()
         {
             foreach (Cell cell in cells)
@@ -176,12 +154,14 @@ namespace Sudoku_solver
             }
         }
 
+        // method for setting candidates for input cell
         private void SetCandidatesForCell(Cell cell)
         {
-            List<int> candidates = new() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            List<int> candidates = new() { 1, 2, 3, 4, 5, 6, 7, 8, 9 }; // all posible numbers
 
             try
             {
+                // all numbers that are in the same row, column or box as the input cell
                 List<int> occupiedNumbers = cells.Where(item => item.Row == cell.Row || item.Col == cell.Col || item.Box == cell.Box)
                     .Select(item => item.Number)
                     .GroupBy(num => num)
@@ -196,6 +176,7 @@ namespace Sudoku_solver
             }
         }
 
+        // method that finds out if exists an empty cell with no candidates
         private bool ExistEmptyCellWithoutCandidates()
         {
             int count = 0;
@@ -215,25 +196,23 @@ namespace Sudoku_solver
                 return true;
         }
 
+        // method for filling all empty cells with just one candidate
         private void FillCellsWithOneCandidate()
         {
             List<Cell> cellsWithOneCandidate = cells.Where(item => item.Candidates.Count == 1).ToList();
-            List<Cell> cc = cells.Where(item => item.Number == 0).ToList();
 
             while (cellsWithOneCandidate.Count > 0)
             {
                 Cell cell = cellsWithOneCandidate.First();
                 int num = cell.Candidates.First();
-                ModifyCandidatesOfNeighborCells(cell, newNumber: num);
+                ModifyCandidatesOfNeighborCells(cell, newNumber: num); // all neighbor cell candidates has to modified
                 cell.Number = num;
-                //cell.Candidates.Clear();
 
                 cellsWithOneCandidate = cells.Where(item => item.Number == 0 && item.Candidates.Count == 1).ToList();
             }
-
-            cc = cells.Where(item => item.Number == 0).ToList();
         }
 
+        // method for modifying candidates of neighbor cells when the input cell change its number
         private void ModifyCandidatesOfNeighborCells(Cell cell, string action = "remove", int newNumber = 0)
         {
             if (action == "remove")
@@ -243,13 +222,9 @@ namespace Sudoku_solver
                 {
                     item.Candidates.Remove(newNumber);
                 }
-                //cell.Candidates.Add(newNumber);
-                //cell.Candidates = cell.Candidates.Order().ToList();
             }
             else if (action == "replace")
             {
-                //ModifyCandidatesOfNeighborCells(cell, "add", cell.Number);
-                //ModifyCandidatesOfNeighborCells(cell, "remove", newNumber);
                 cell.Number = newNumber;
                 foreach (Cell item in cells.Where(item => (item.Row == cell.Row || item.Col == cell.Col || item.Box == cell.Box) && item.Number == 0))
                 {
@@ -262,14 +237,11 @@ namespace Sudoku_solver
                 foreach (Cell item in cells.Where(item => (item.Row == cell.Row || item.Col == cell.Col || item.Box == cell.Box) && item.Number == 0))
                 {
                     SetCandidatesForCell(item);
-                    //if (item.Candidates.Contains(cell.Number))
-                    //    continue;
-                    //item.Candidates.Add(cell.Number);
-                    //item.Candidates = item.Candidates.Order().ToList();
                 }
             }
         }
 
+        // method that returns count of empty cells in the sudoku
         private int CountOfEmptyCells(List<Cell> input)
         {
             int count = 0;

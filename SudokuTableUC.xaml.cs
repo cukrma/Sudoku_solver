@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+
 
 namespace Sudoku_solver
 {
@@ -36,6 +26,7 @@ namespace Sudoku_solver
             CreateKeyboard();
         }
 
+        // method for setting the sudoku base on loaded data
         public void LoadGame(string input)
         {
             for (int i = 0; i < input.Length; i++)
@@ -48,6 +39,7 @@ namespace Sudoku_solver
             }
         }
 
+        // method that converts current state of a game into a string for saving into a file
         public string GameToString()
         {
             StringBuilder sb = new StringBuilder();
@@ -60,6 +52,7 @@ namespace Sudoku_solver
             return sb.ToString();
         }
 
+        // method for setting backend cells to current values and checking the rules
         public string GameRuleViolated()
         {
             cells = SetCellsNumbers();
@@ -67,6 +60,7 @@ namespace Sudoku_solver
             return rule;
         }
 
+        // method ensuring solving the game, setting the frontend buttons content and checks the game rules
         public void SolveGame()
         {
             SudokuSolver sudokuSolver = new SudokuSolver(cells);
@@ -86,7 +80,7 @@ namespace Sudoku_solver
                 {
                     Cell cell = cells.ElementAt(i);
                     Button btn = buttons.ElementAt(i);
-                    btn.Content = cell.Number.ToString();
+                    btn.Content = cell.Number.ToString(); // setting the frontend buttons to final values after the game is solved
                 }
                 catch (Exception ex)
                 {
@@ -94,12 +88,13 @@ namespace Sudoku_solver
                 }
             }
 
-            string rule = CheckRules();
+            //// just a control check at the end for testing purpose
+            //string rule = CheckRules();
 
-            if (rule != "")
-            {
-                MessageBox.Show($"Game rules violated! {rule}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            //if (rule != "")
+            //{
+            //    MessageBox.Show($"Game rules violated! {rule}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            //}
         }
 
 
@@ -128,6 +123,7 @@ namespace Sudoku_solver
             }
         }
 
+        // method that created keyboardUC, adding button handler and setting its the position
         private void CreateKeyboard()
         {
             HideKeyboard();
@@ -140,6 +136,7 @@ namespace Sudoku_solver
             Grid.SetColumnSpan(keyboardUC, 9);
         }
 
+        // method that sets backend cells number base on frontend buttons content
         private List<Cell> SetCellsNumbers()
         {
             for (int i = 0; i < 81; i++)
@@ -164,6 +161,7 @@ namespace Sudoku_solver
             return cells;
         }
 
+        // method checking all rows, columns and boxes if its valid and if not then return string with name of a rule that is violated
         private string CheckRules()
         {
             string rule = "";
@@ -213,7 +211,7 @@ namespace Sudoku_solver
             return rule;
         }
 
-
+        // handler for button in grid that shows the keyboardUC
         private void ButtonClickHandler(object sender, RoutedEventArgs e)
         {
             if (sender is Button btn)
@@ -231,6 +229,7 @@ namespace Sudoku_solver
             }
         }
 
+        // event handler called after user clicks on button in keyboardUC
         private void onKeyboardButton_Click(object sender, KeyboardUCEventArgs e)
         {
             HideKeyboard();
@@ -243,6 +242,7 @@ namespace Sudoku_solver
             }
         }
 
+        // method that selecting which buttons and on which side should get thicker border
         private void AddBorder(Button btn, int row, int col)
         {
             if (row == 1 || row == 4 || row == 7)
@@ -255,6 +255,7 @@ namespace Sudoku_solver
                 SetBorderThickness(btn, 3, "right");
         }
 
+        // helping method for setting the border thickness of specific buttons to visualise 3x3 boxes in the grid
         private void SetBorderThickness(Button btn, int thickness, string side)
         {
             Thickness newBorderThickness = new Thickness(btn.BorderThickness.Left,
@@ -293,6 +294,7 @@ namespace Sudoku_solver
             btn.BorderThickness = newBorderThickness;
         }
 
+        // method for hiding keyboardUC
         public void HideKeyboard()
         {
             keyboardUC.Visibility = Visibility.Collapsed;

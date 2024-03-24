@@ -20,8 +20,6 @@ C:\my_files\Sudoku_solver\Sudoku_solver\obj\Debug\net8.0-windows\Sudoku_solver.g
 C:\my_files\Sudoku_solver\Sudoku_solver\obj\Debug\net8.0-windows\ref\Sudoku_solver.dll
 C:\my_files\Sudoku_solver\Sudoku_solver\obj\Debug\net8.0-windows\SudokuTableUC.g.cs
 C:\my_files\Sudoku_solver\Sudoku_solver\obj\Debug\net8.0-windows\SudokuTableUC.baml
-C:\my_files\Sudoku_solver\Sudoku_solver\obj\Debug\net8.0-windows\CellUC.g.cs
-C:\my_files\Sudoku_solver\Sudoku_solver\obj\Debug\net8.0-windows\CellUC.baml
 C:\my_files\Sudoku_solver\Sudoku_solver\obj\Debug\net8.0-windows\KeyboardUC.g.cs
 C:\my_files\Sudoku_solver\Sudoku_solver\obj\Debug\net8.0-windows\KeyboardUC.baml
 C:\my_files\Sudoku_solver\Sudoku_solver\obj\Debug\net8.0-windows\Sudoku_solver.sourcelink.json

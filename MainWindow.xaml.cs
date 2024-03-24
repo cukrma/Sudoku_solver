@@ -1,15 +1,8 @@
 ﻿using Microsoft.Win32;
 using System.IO;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+
 
 namespace Sudoku_solver
 {
@@ -28,6 +21,7 @@ namespace Sudoku_solver
 
         }
 
+        // method for adding Sudoku component in the grid at specific position
         private void AddSudokuToGrid()
         {
             grid.Children.Add(sudoku);
@@ -35,7 +29,7 @@ namespace Sudoku_solver
             Grid.SetColumn(sudoku, 1);
         }
 
-
+        // handler for clear button that clears all sudoku
         private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
             sudoku.HideKeyboard();
@@ -50,6 +44,7 @@ namespace Sudoku_solver
             }
         }
 
+        // handler for load button that loads a game from a file
         private void LoadButton_Click(object sender, RoutedEventArgs e)
         {
             sudoku.HideKeyboard();
@@ -69,27 +64,28 @@ namespace Sudoku_solver
                     MessageBox.Show("Error reading file: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
 
-                if (fileContent.Length == 81 && fileContent.All(char.IsDigit))
+                if (fileContent.Length == 81 && fileContent.All(char.IsDigit)) // check if the content of file is in valid format
                     sudoku.LoadGame(fileContent);
                 else
                     MessageBox.Show("Content of file doesn't match the requirements.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
+        // handler for save button that saves current state of a game into a file
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             sudoku.HideKeyboard();
-            string rule = sudoku.GameRuleViolated();
+            string rule = sudoku.GameRuleViolated(); // checking if the current state of a game is valid
 
-            if (rule != "")
+            if (rule != "") // if its not valid, then it goes inside this if block
             {
-                if (stopSavingGame(rule))
+                if (stopSavingGame(rule)) // if user doenst want to continue saving, the saving is canceled
                     return;
             }
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
-            saveFileDialog.FileName = "game.txt";
+            saveFileDialog.FileName = "game.txt"; // pre-defined name for saving file
 
             if (saveFileDialog.ShowDialog() == true)
             {
@@ -107,10 +103,11 @@ namespace Sudoku_solver
             }
         }
 
+        // handler for solve button that runs a solving algorithm
         private void SolveButton_Click(object sender, RoutedEventArgs e)
         {
             sudoku.HideKeyboard();
-            string rule = sudoku.GameRuleViolated();
+            string rule = sudoku.GameRuleViolated(); // check if the start state of a game is valid
 
             if (rule != "")
             {
@@ -118,10 +115,10 @@ namespace Sudoku_solver
                 return;
             }
 
-            sudoku.SolveGame();
+            sudoku.SolveGame(); // run the solving algorithm
         }
 
-
+        // helping method that informs user that the state of a game is invalid and asks if he/she wants to continue saving proccess
         private bool stopSavingGame(string rule)
         {
             MessageBoxResult result = MessageBox.Show($"The game you want to save violates the rules. " +
@@ -134,6 +131,7 @@ namespace Sudoku_solver
                 return true;
         }
 
+        // helping method that informs user that the state of a game is invalid and so the game cant be solved
         private void stopSolvingGame(string rule)
         {
             MessageBox.Show($"The game can't be solved because it violates the rules. " +

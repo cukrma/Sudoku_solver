@@ -1,21 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+
 
 namespace Sudoku_solver
 {
+    // helping class for transfering arguments throw event
     public class KeyboardUCEventArgs : EventArgs
     {
         public int? Value { get; }
@@ -40,6 +29,7 @@ namespace Sudoku_solver
             CreateButtons();
         }
 
+        // method for creating all buttons for the keyboard and setting their positions in the grid
         private void CreateButtons()
         {
             for (int i = 1; i <= 9; i++)
@@ -53,8 +43,8 @@ namespace Sudoku_solver
                 Grid.SetColumn(btn, col);
             }
 
-            Button empty = CreateButton(0, "Empty", 20, new Thickness(4, 2, 4, 2)); // Emtpy button
-            empty.Margin = new Thickness(0, 0, 22, 0);
+            Button empty = CreateButton(0, "Empty", 20, new Thickness(4, 2, 4, 2)); // Empty button
+            empty.Margin = new Thickness(0, 0, 22, 0); // space between Empty button and Cancel button
             Button cancel = CreateButton(null, "Cancel", 20, new Thickness(4, 2, 4, 2)); // Cancel button
 
             StackPanel stackPanel = new StackPanel();
@@ -68,6 +58,7 @@ namespace Sudoku_solver
             Grid.SetColumnSpan(stackPanel, 3);
         }
 
+        // method for creating a single button with some default values
         private Button CreateButton(int? value, string content, double? fontSize = null, Thickness? thickness = null)
         {
             Button btn = new Button();
@@ -83,6 +74,7 @@ namespace Sudoku_solver
             return btn;
         }
 
+        // handler for button click (sending arguments to its parent throw event)
         private void ButtonClickHandler(object sender, RoutedEventArgs e)
         {
             if (sender is Button btn)
@@ -95,8 +87,8 @@ namespace Sudoku_solver
                     if (subStr.Length > 0)
                         value = int.Parse(subStr);
 
-                    var args = new KeyboardUCEventArgs(value);
-                    keyboardButton_Click?.Invoke(this, args);
+                    var args = new KeyboardUCEventArgs(value); // creating arguments
+                    keyboardButton_Click?.Invoke(this, args); // creating event with arguments that is send to its parent
                 }
                 catch (Exception ex)
                 {
